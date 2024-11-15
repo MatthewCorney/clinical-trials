@@ -73,20 +73,3 @@ def baysian_optimisation():
     )
     optimal_n_clusters = results.x[0]
     logger.info(f"Optimal n_clusters: {optimal_n_clusters}")
-
-
-if __name__ == "__main__":
-    n_clusters = 10
-    max_iter = 40
-    data_set = DataSet(embedding_path=f'{settings.data_dir}\\core_data_embedding.jsonl',
-                       annotation_path=f'{settings.data_dir}\\core_data_annotation.jsonl')
-    scaler = StandardScaler()
-    data_scaled = scaler.fit_transform(list(data_set.sorted_index_embedding.values())).astype(np.float32)
-
-    faiss_centroids, faiss_distances, faiss_labels = perform_kmeans_faiss(data_scaled=data_scaled,
-                                                                          n_clusters=n_clusters,
-                                                                          max_iter=max_iter)
-
-    faiss_silhouette = silhouette_score(data_scaled, faiss_labels[:, 0])
-    logger.info(f"Silhouette Score (faiss): {faiss_silhouette:.4f}")
-    baysian_optimisation()
