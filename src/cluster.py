@@ -60,9 +60,8 @@ def baysian_optimisation():
             return -faiss_silhouette
 
         except Exception as e:
-            # Handle potential errors during clustering
             logger.info(f"Error with n_clusters={n_clusters}: {e}")
-            return float('inf')  # Penalize invalid configurations
+            return float('inf')
 
     results = gp_minimize(
         func=objective,
