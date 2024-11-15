@@ -1,5 +1,3 @@
-![genetic_prompt_opt_icon](genetic_prompt_opt_icon.png)
-
 # Introduction
 Workflow for embedding clinical trials in order to find semantically similar trials or for topic clustering. This
 workflow uses the openai batch api to reduce costs where 50000 requests can be submitted at once. Despite the 24-hour 
