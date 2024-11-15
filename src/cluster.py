@@ -18,7 +18,7 @@ def perform_kmeans_faiss(data_scaled: np.ndarray,
                          n_clusters: int,
                          max_iter: int = 400) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
-    Performs Kmeans  clustering using the faiss implementation
+    Performs Kmeans clustering using the faiss implementation
 
     :param data_scaled: Embedding vectors
     :param n_clusters: Number of clusters

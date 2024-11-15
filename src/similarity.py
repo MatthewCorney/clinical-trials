@@ -28,7 +28,7 @@ def topn_similar_trials(embeddings: List[List[Union[float, torch.Tensor]]], quer
 
     :param embeddings: Tensor or array-like of shape (n_samples, n_features)
     :param query_index: Integer of the embedding to query with
-    :param top_x: top n items to return
+    :param top_x: Top n items to return
     :return:
     """
     if not isinstance(embeddings, torch.Tensor):

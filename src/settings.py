@@ -7,11 +7,12 @@ load_dotenv()
 
 
 class Settings(BaseSettings):
+    # All set in .env
     openai_api_key: str = ''
     logging_level: str = 'INFO'
     model: str = "gpt-4o-mini"
     embedding_model: str = "text-embedding-3-small"
-    data_dir: str = "text-embedding-3-small"
+    data_dir: str = r"clinical_trials_embedding/data"
 
     class Config:
         # Tell pydantic-settings to look for the .env file

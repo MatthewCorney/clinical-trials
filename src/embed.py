@@ -8,6 +8,9 @@ import json
 
 
 class ClinicalTrial(BaseModel):
+    """
+    Basic data object for the trials
+    """
     nctId: str
     title: str
     conditions: List[Dict[str, str]]
@@ -23,7 +26,7 @@ def load_jsonl(path: str) -> list[dict]:
     """
     Loads a jsonl
 
-    :param path:
+    :param path: path to file
     :return:
     """
     batch_objects = []
@@ -39,8 +42,8 @@ def save_jsonl(path:str, obj: List[dict]):
     """
     OpenAi standard requires a jsonl rather than pure json
 
-    :param path:
-    :param obj:
+    :param path: path to file
+    :param obj: object to save, nb must be a list of json objects
     :return:
     """
     with open(path, 'w') as f:
@@ -94,9 +97,9 @@ def batch_upload(return_object: List[ClinicalTrial],
     we are further limited by tokens
 
     :param return_object: Object of clinical trials
-    :param path: path for the response with the batch id
-    :param embedding_model: the embedding model to use
-    :param request_limit: raises an exception if the number of items is above this
+    :param path: Path for the response with the batch id
+    :param embedding_model: The embedding model to use (set in settings by default)
+    :param request_limit: Raises an exception if the number of items is above this
     :return:
     """
     batch_list = []
