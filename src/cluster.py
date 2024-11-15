@@ -5,7 +5,6 @@ from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
 import faiss
 from sklearn.metrics import silhouette_score
-from sklearn.datasets import fetch_openml
 from src.DataSet import DataSet
 from src.settings import settings, logger
 from typing import List, Union, Tuple
@@ -17,11 +16,13 @@ from sklearn.metrics import silhouette_score
 
 def perform_kmeans_faiss(data_scaled: np.ndarray,
                          n_clusters: int,
-                         max_iter: int) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+                         max_iter: int = 400) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
     Performs Kmeans  clustering using the faiss implementation
 
-    :param data_scaled:
+    :param data_scaled: Embedding vectors
+    :param n_clusters: Number of clusters
+    :param max_iter: Iterations for FAISS
     :return:
     """
     logger.info(f"Starting faiss KMeans")
@@ -36,13 +37,17 @@ def perform_kmeans_faiss(data_scaled: np.ndarray,
     return faiss_centroids, faiss_distances, faiss_labels
 
 
-def baysian_optimisation():
-    max_iter = 40
-    data_set = DataSet(embedding_path=f'{settings.data_dir}\\core_data_embedding.jsonl',
-                       annotation_path=f'{settings.data_dir}\\core_data_annotation.jsonl')
-    scaler = StandardScaler()
-    data_scaled = scaler.fit_transform(list(data_set.sorted_index_embedding.values())).astype(np.float32)
-    search_space = [Integer(2,300, name='n_clusters')]
+def baysian_optimisation(data_scaled: np.ndarray, min_clusters: int, max_clusters: int, max_iter: int = 400) -> int:
+    """
+    Optimisation Wrapper for faiss clustering
+
+    :param data_scaled: Embedding vectors
+    :param min_clusters: Minimum number of clusters
+    :param max_clusters: Maximum number of clusters
+    :param max_iter: Iterations for FAISS
+    :return:
+    """
+    search_space = [Integer(min_clusters, max_clusters, name='n_clusters')]
 
     @use_named_args(search_space)
     def objective(n_clusters):
@@ -51,7 +56,7 @@ def baysian_optimisation():
             faiss_centroids, faiss_distances, faiss_labels = perform_kmeans_faiss(
                 data_scaled=data_scaled,
                 n_clusters=n_clusters,
-                max_iter=max_iter  # or your desired value
+                max_iter=max_iter
             )
 
             # Calculate silhouette score
@@ -72,3 +77,4 @@ def baysian_optimisation():
     )
     optimal_n_clusters = results.x[0]
     logger.info(f"Optimal n_clusters: {optimal_n_clusters}")
+    return optimal_n_clusters
