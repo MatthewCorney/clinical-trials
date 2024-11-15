@@ -1,13 +1,13 @@
 ![genetic_prompt_opt_icon](genetic_prompt_opt_icon.png)
 
 # Introduction
-Workflow for embedding clinical trials in order to find semantically similar trials or for topic
-finding
+Workflow for embedding clinical trials in order to find semantically similar trials or for topic clustering. This
+workflow uses the openai batch api to reduce costs where 50000 requests can be submitted at once. Despite the 24-hour 
+window to run the batch will usually complete in under 3 hours. One oddity of the batch API is that multiple jobs cannot
+be queued at once, so jobs must be submitted sequentially.
 
 # Dependencies
 The package has the following dependencies:
-Currently the pipeline only works for openai/chatgpt and also uses the bulk request api
-for the submission of text to embed
 
 - numpy
 - openai
@@ -19,9 +19,8 @@ for the submission of text to embed
 - skopt
 
 # Usage
-
+To install 
 ```
-pip install git+https://github.com/MatthewCorney/GeneticPromptOpt.git
+pip install git+https://github.com/MatthewCorney/clinical-trials.git
 ```
-## Define our base classes for the input and output
-Definging the outptut format is important so that openai will try to return data in the correct format
+for usage look in the notebooks folder
