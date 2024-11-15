@@ -67,8 +67,8 @@ def baysian_optimisation():
     results = gp_minimize(
         func=objective,
         dimensions=search_space,
-        n_calls=30,  # Number of evaluations
-        random_state=42,  # Reproducibility
+        n_calls=30,
+        random_state=42,
         verbose=True
     )
     optimal_n_clusters = results.x[0]
