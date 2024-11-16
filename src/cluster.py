@@ -37,7 +37,7 @@ def perform_kmeans_faiss(data_scaled: np.ndarray,
 
 
 def baysian_optimisation(data_scaled: np.ndarray, min_clusters: int, max_clusters: int, max_iter: int = 400,
-                         n_calls: int = 10) -> int:
+                         n_calls: int = 15) -> int:
     """
     Optimisation Wrapper for faiss clustering
 
