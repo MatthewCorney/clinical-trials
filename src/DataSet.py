@@ -1,7 +1,7 @@
 from typing import Optional
 
-from embed import load_jsonl
-from settings import settings
+from src.embed import load_jsonl
+from src.settings import settings
 
 
 class DataSet:
@@ -20,6 +20,16 @@ class DataSet:
         self.id_text_dict = {}
         for item in data_annotation:
             self.id_text_dict[item['nctId']] = item['title']
+
+        self.id_conditions_dict = {}
+        for item in data_annotation:
+            self.id_conditions_dict[item['nctId']] = [x["id"] for x in item['conditions']]
+
+        self.mesh_name_dict = {}
+        for item in data_annotation:
+            for term in item['conditions']:
+                if term["id"] not in self.mesh_name_dict:
+                    self.mesh_name_dict[term["id"]] = term['term']
         # {nctId:index}
         self.name_index_dict = {k: i for i, k in enumerate(self.id_text_dict.keys())}
         # {index:nctId}
