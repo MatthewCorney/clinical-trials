@@ -4,7 +4,6 @@ from sklearn.datasets import load_iris
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
 import faiss
-from sklearn.metrics import silhouette_score
 from src.DataSet import DataSet
 from src.settings import settings, logger
 from typing import List, Union, Tuple
@@ -37,10 +36,12 @@ def perform_kmeans_faiss(data_scaled: np.ndarray,
     return faiss_centroids, faiss_distances, faiss_labels
 
 
-def baysian_optimisation(data_scaled: np.ndarray, min_clusters: int, max_clusters: int, max_iter: int = 400) -> int:
+def baysian_optimisation(data_scaled: np.ndarray, min_clusters: int, max_clusters: int, max_iter: int = 400,
+                         n_calls: int = 10) -> int:
     """
     Optimisation Wrapper for faiss clustering
 
+    :param n_calls: Number of calls for optimisation
     :param data_scaled: Embedding vectors
     :param min_clusters: Minimum number of clusters
     :param max_clusters: Maximum number of clusters
@@ -71,7 +72,7 @@ def baysian_optimisation(data_scaled: np.ndarray, min_clusters: int, max_cluster
     results = gp_minimize(
         func=objective,
         dimensions=search_space,
-        n_calls=30,
+        n_calls=n_calls,
         random_state=42,
         verbose=True
     )
