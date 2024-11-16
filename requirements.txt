@@ -6,3 +6,4 @@ torch
 ijson
 faiss-cpu
 scikit-optimize
+pydantic_settings
