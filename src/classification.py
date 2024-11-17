@@ -123,7 +123,7 @@ def training_loop(model: nn.Module,
                 loss = criterion(outputs, targets)
                 val_loss += loss.item()
 
-        avg_val_loss = val_loss / len(test_dataloader)
+        avg_val_loss = val_loss / len(validation_dataloader)
         logger.info(f"Epoch [{epoch + 1}/{num_epochs}], Validation Loss: {avg_val_loss:.4f}")
 
         # Check early stopping condition
@@ -140,14 +140,17 @@ def training_loop(model: nn.Module,
             break
 
 
-def test(model: nn.Module, test_dataloader: DataLoader) -> None:
+def test(model: nn.Module, test_dataloader: DataLoader, criterion=None) -> None:
     """
     Outputs the loss over the testing dataloader
 
     :param model: Trained Model
     :param test_dataloader: Testing Dataloader
+    :param criterion: Criterion to use, defaults to binary cross entropy
     :return:
     """
+    if not criterion:
+        criterion = nn.BCELoss()
     model.eval()
     test_loss = 0.0
     with torch.no_grad():
