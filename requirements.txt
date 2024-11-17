@@ -7,3 +7,4 @@ ijson
 faiss-cpu
 scikit-optimize
 pydantic_settings
+ghostml
