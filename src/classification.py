@@ -24,7 +24,7 @@ class SimpleDataset(Dataset):
 
 
 class MultiLabelModel(nn.Module):
-    def __init__(self, input_dim, output_dim):
+    def __init__(self, input_dim: int, output_dim: int):
         super(MultiLabelModel, self).__init__()
         self.fc1 = nn.Linear(input_dim, 128)
         self.fc2 = nn.Linear(128, 64)
@@ -161,27 +161,6 @@ def test(model: nn.Module, test_dataloader: DataLoader, criterion=None) -> None:
     logger.info(f"Test Loss: {test_loss / len(test_dataloader):.4f}")
 
 
-# def get_all_predicted_labels(model: nn.Module, train_dataloader: DataLoader, threshold=0,
-#                              index_to_label: Optional[dict] = None):
-#     model.eval()
-#     all_predictions = []
-#
-#     with torch.no_grad():
-#         for inputs, _ in train_dataloader:
-#             outputs = model(inputs)  # Get predictions
-#             batch_predicted_indices = (outputs >= threshold).nonzero(
-#                 as_tuple=False)  # Get indices of predictions above threshold
-#
-#             # Group predictions by sample
-#             for i in range(inputs.size(0)):
-#                 sample_indices = batch_predicted_indices[batch_predicted_indices[:, 0] == i, 1]
-#                 if index_to_label:
-#                     predicted_labels = [index_to_label[idx.item()] for idx in sample_indices]
-#                     all_predictions.append(predicted_labels)
-#                 else:
-#                     predicted_index = [idx.item() for idx in sample_indices]
-#                     all_predictions.append(predicted_index)
-#     return all_predictions
 def get_all_probabilities(model: nn.Module, dataloader: DataLoader) -> torch.Tensor:
     """
     Returns all probabilities
