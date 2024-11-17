@@ -6,6 +6,7 @@ from src.settings import settings
 
 class DataSet:
     """ Basic Dataset class for downstream applications"""
+
     def __init__(self, embedding_path: Optional[str], annotation_path: Optional[str]):
         if not embedding_path:
             data_embedding = load_jsonl(f'{settings.data_dir}\\core_data_embedding.jsonl')
@@ -24,12 +25,14 @@ class DataSet:
         self.id_conditions_dict = {}
         for item in data_annotation:
             self.id_conditions_dict[item['nctId']] = [x["id"] for x in item['conditions']]
-
+        # {mesh_id:disease_name}
         self.mesh_name_dict = {}
         for item in data_annotation:
             for term in item['conditions']:
                 if term["id"] not in self.mesh_name_dict:
                     self.mesh_name_dict[term["id"]] = term['term']
+        # {disease_name:mesh_id}
+        self.name_mesh_dict = {v: k for k, v in self.mesh_name_dict.items()}
         # {nctId:index}
         self.name_index_dict = {k: i for i, k in enumerate(self.id_text_dict.keys())}
         # {index:nctId}
