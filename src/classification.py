@@ -8,7 +8,7 @@ from src.settings import settings, logger
 from sklearn.model_selection import train_test_split
 from typing import Optional
 import ghostml
-from typing import Dict
+from typing import Dict, List
 
 
 class SimpleDataset(Dataset):
@@ -24,19 +24,31 @@ class SimpleDataset(Dataset):
 
 
 class MultiLabelModel(nn.Module):
-    def __init__(self, input_dim: int, output_dim: int):
+    def __init__(self, input_dim: int, output_dim: int, hidden_dims=None,
+                 dropout_prob: float = 0.001):
         super(MultiLabelModel, self).__init__()
-        self.fc1 = nn.Linear(input_dim, 128)
-        self.fc2 = nn.Linear(128, 64)
-        self.fc3 = nn.Linear(64, output_dim)
-        self.relu = nn.ReLU()
-        self.sigmoid = nn.Sigmoid()
+        if hidden_dims is None:
+            hidden_dims = [512, 256, 128, 64]
+        layers = []
+        current_dim = input_dim
+
+        for hidden_dim in hidden_dims:
+            layers.append(nn.Linear(current_dim, hidden_dim))
+            layers.append(nn.BatchNorm1d(hidden_dim))
+            layers.append(nn.SELU())
+            layers.append(nn.Dropout(p=dropout_prob))
+            current_dim = hidden_dim
+
+        # Final layer for output
+        layers.append(nn.Linear(current_dim, output_dim))
+        layers.append(nn.Sigmoid())  # Sigmoid for multi-label outputs
+
+        # Combine into a sequential model
+        self.model = nn.Sequential(*layers)
+        logger.info(self.model)
 
     def forward(self, x):
-        x = self.relu(self.fc1(x))
-        x = self.relu(self.fc2(x))
-        x = self.sigmoid(self.fc3(x))  # Sigmoid for multi-label outputs
-        return x
+        return self.model(x)
 
 
 class ClassificationDataSet(DataSet):
@@ -133,7 +145,7 @@ def training_loop(model: nn.Module,
             torch.save(model.state_dict(), f'{settings.data_dir}/best_model.pth')  # Save the best model
         else:
             counter += 1
-            logger.info(f"No improvement in validation loss for {counter} epochs.")
+            logger.info(f"No improvement in validation loss for {counter}/{patience} epochs.")
 
         if counter >= patience:
             logger.info(f"Early stopping triggered at epoch {epoch + 1}")
@@ -181,9 +193,9 @@ def get_all_probabilities(model: nn.Module, dataloader: DataLoader) -> torch.Ten
 
 def optimise_thresholds(train_labels: torch.Tensor,
                         train_probabilities: torch.Tensor,
-                        thresholds: list[float],
-                        subset: Optional[list[int]] = None,
-                        min_positive_count: int = 3) -> Dict[int:float]:
+                        thresholds: List[float] = None,
+                        subset: Optional[List[int]] = None,
+                        min_positive_count: int = 3) -> Dict[int, float]:
     """
     Uses GhostML to optimise the threshold on a per class basis.
 
