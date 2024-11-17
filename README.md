@@ -15,6 +15,7 @@ The package has the following dependencies:
 - ijson
 - faiss
 - skopt
+- ghostml
 
 # Usage
 To install 
